@@ -7,6 +7,6 @@ class Player{
         Player(Sign sign);
         Sign GetSign() const;
 
-    private:
-        Sign sign;
+    protected:
+        Sign sign_;
 };
