@@ -1,5 +1,7 @@
 # tic-tac-toe-in-Cpp
 
+[Laboratorul 2](#laboratorul-2)
+
 ### Scopul:
 Recrearea faimosului joc Tic-Tac-Toe (aka: X și O) folosind limbajul C++.
 
@@ -195,4 +197,59 @@ class GameEngine{
 };
 ```
 
+# Laboratorul 2
+Pentru a avea un proiect cât de cât organizat, am repartizat proiectul în 4 foldere:
+- **include** - folderul cu toate fișierele antet
+- **obj** - folderul cu toate fișierele obiect care se compilează (acest fișier este in .gitignore)
+- **src** - folderul cu fișierele cpp cu implementarea metodelor claselor
+- **bin** - folderul unde se compilează executabilul / jocul.
 
+---
+**Notă**
+
+Jocul este funcțional și poate fi executat / jucat în modul Player vs Player. Implementarea Robotului am făcut-o dar încă nu am găsit cum pot să verific dacă **player2** este o intanță Robot sau Player. Dar având în vedere că restul jocului este implementat și cerințele laboratorului completate, nu cred că este vreo problemă.
+
+---
+
+Fișierul **makefile** conține instrucțiunile pentru compilarea fișierelor obiect din fișierele cpp, apoi a executabilului, din fișierele obiect.
+
+
+```make
+OBJDIR = obj
+SRCDIR = src
+BINDIR = bin
+
+all: TicTacToeGame
+
+TicTacToeGame: board.o game_engine.o main.o painter.o player.o point.o robot.o
+	g++ $(OBJDIR)/board.o $(OBJDIR)/game_engine.o $(OBJDIR)/main.o $(OBJDIR)/painter.o \
+	$(OBJDIR)/player.o $(OBJDIR)/point.o $(OBJDIR)/robot.o -o $(BINDIR)/TicTacToeGame.exe
+
+board.o:
+	g++ $(SRCDIR)/board.cpp -o $(OBJDIR)/board.o -c
+
+game_engine.o:
+	g++ $(SRCDIR)/game_engine.cpp -o $(OBJDIR)/game_engine.o -c
+
+main.o:
+	g++ $(SRCDIR)/main.cpp -o $(OBJDIR)/main.o -c
+
+painter.o:
+	g++ $(SRCDIR)/painter.cpp -o $(OBJDIR)/painter.o -c
+
+player.o:
+	g++ $(SRCDIR)/player.cpp -o $(OBJDIR)/player.o -c
+
+point.o:
+	g++ $(SRCDIR)/point.cpp -o $(OBJDIR)/point.o -c
+
+robot.o:
+	g++ $(SRCDIR)/robot.cpp -o $(OBJDIR)/robot.o -c
+
+clean:
+	rm -f $(OBJDIR)/*.o $(BINDIR)/*.exe
+
+```
+
+- penru denumirea folderelor am folosit denumiri variabile
+- comanda **clean** șterge toate fișierele .o din obj și .exe din bin, astfel curățind proiectul înainte de o ulterioară compilare. Dar comanda **rm** merge doar în terminale ca bash...

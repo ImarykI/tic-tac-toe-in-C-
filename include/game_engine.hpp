@@ -1,27 +1,29 @@
 #pragma once
-
 #include "painter.hpp"
 #include "robot.hpp"
 #include "game_status.hpp"
+#include "board.hpp"
 
 class GameEngine{
     public:
+        GameEngine();
         void StartGame();
-        bool isGameOver() const;
+        bool IsGameOver() const;
+        void RunGame();
         
-        GameStatus checkStatus() const;
-        Board& getBoard();
+        GameStatus CheckStatus() const;
+        Board& GetBoard();
 
     private:
         Board board;
         Player player1;
         Player player2;
-        Robot robot;
         GameStatus status;
+        Painter painter;
 
         short int currentPlayerNumber;
 
         void SwitchPlayer();
-        void handleMove();
+        void HandleMove();
 
 };

@@ -1,5 +1,5 @@
 #pragma once
 
 enum class Sign{
-	empty, X, O
+	Empty, X, O 
 };
