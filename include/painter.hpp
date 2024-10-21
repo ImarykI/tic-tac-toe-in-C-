@@ -1,12 +1,21 @@
 #pragma once
 
-#include "board.hpp"
-#include "player.hpp"
-#include "game_status.hpp"
+#include "../include/abstract_painter.hpp"
 
-class Painter {
+class Painter: public AbstractPainter {
 	public:
-		void ClearFrame();
-		void DrawBoard(Sign board[3][3]);
-		void PrintGameStatus(Player player, GameStatus currentGameStatus);
+
+		//Constuctori
+		Painter();
+		Painter(const Painter& painter);
+
+    	Painter& operator=(const Painter& other);
+		bool operator==(const Painter& other)const;
+
+		virtual void ClearFrame();
+		virtual void DrawBoard(Sign board[3][3]);
+		virtual void PrintGameStatus(Player player, GameStatus currentGameStatus);
 };
+
+std::istream& operator >> (std::istream& in, Painter& painter);
+std::ostream& operator << (std::ostream& out, const Painter& painter);

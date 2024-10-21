@@ -2,9 +2,63 @@
 #include <cstdio>
 
 GameEngine::GameEngine(): player1(Sign::Empty), player2(Sign::Empty){
-currentPlayerNumber = 1;
-status = GameStatus::Running;
-}
+    currentPlayerNumber = 1;
+    status = GameStatus::Running;
+};
+
+GameEngine::GameEngine(Board board, Player player1, Player player2, GameStatus status, Painter painter, short int currPlayerNumber){
+    this->board = board;
+    this->player1 = player1;
+    this->player2 = player2;
+    this->status = status;
+    this->painter = painter;
+    currentPlayerNumber = currPlayerNumber;
+};
+
+GameEngine::GameEngine(const GameEngine& gameEngine){
+    board = gameEngine.board;
+    player1 = gameEngine.player1;
+    player2 = gameEngine.player2;
+    status = gameEngine.status;
+    painter = gameEngine.painter;
+    currentPlayerNumber = gameEngine.currentPlayerNumber;
+};
+
+GameEngine& GameEngine::operator=(const GameEngine& gameEngine){
+    board = gameEngine.board;
+    player1 = gameEngine.player1;
+    player2 = gameEngine.player2;
+    status = gameEngine.status;
+    painter = gameEngine.painter;
+    currentPlayerNumber = gameEngine.currentPlayerNumber;
+
+    return *this;
+};
+
+bool GameEngine::operator==(const GameEngine& other)const{
+    return other.status == status;
+};
+
+
+std::istream& operator >> (std::istream& in, GameEngine& gameEngine){
+    Board board;
+    Player player1, player2;
+    Painter painter;
+    short int currPlayerNumber;
+
+    in >> board >> player1 >> player2 >> painter >> currPlayerNumber;
+
+    gameEngine = GameEngine(board, player1, player2, GameStatus::Running, painter, currPlayerNumber);
+
+    return in;
+};
+
+std::ostream& operator << (std::ostream& out, const GameEngine& gameEngine){
+    out << gameEngine.board << "\n" << gameEngine.currentPlayerNumber;
+
+    return out;
+};
+
 
 void GameEngine::StartGame()
 { 

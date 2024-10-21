@@ -2,9 +2,39 @@
 #include <cstdio>
 #include <stdlib.h>
 
-void Painter::ClearFrame(){
-	system("cls");
+Painter::Painter()
+{
 };
+
+Painter::Painter(const Painter &painter)
+{
+	*this = painter;
+};
+
+Painter& Painter::operator=(const Painter& other){
+ 	*this = other;
+ 	return *this;
+};
+
+bool Painter::operator==(const Painter& other)const{
+	return *this == other;
+};
+
+std::istream& operator >> (std::istream& in, Painter& painter){
+	return in;
+};
+
+
+std::ostream& operator << (std::ostream& out, const Painter& painter){
+	return out;
+};
+
+
+
+void Painter::ClearFrame(){
+    system("cls");
+};
+
 
 void Painter::DrawBoard(Sign board[3][3]){
 	
