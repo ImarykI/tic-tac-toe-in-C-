@@ -1,9 +1,66 @@
 #include "../include/robot.hpp"
 
+Robot::Robot(){};
+
 Robot::Robot(Difficulty diff, Sign sign): Player(sign){
     difficulty = diff;
-    sign_=sign;
+    sign_= sign;
 };
+
+Robot::Robot(const Robot& robot): Player(robot.sign_){
+    sign_ = robot.GetSign();
+    difficulty = robot.GetDifficulty();
+};
+
+Robot& Robot::operator=(const Robot& other){
+    sign_ = other.GetSign();
+    difficulty = other.GetDifficulty();
+    return *this;
+};
+bool Robot::operator==(const Robot& other)const{
+    return sign_ == other.GetSign() && difficulty == other.GetDifficulty();
+};
+
+std::istream& operator >> (std::istream& in, Robot& robot){
+    
+    char imputChar;
+
+    in >> imputChar;
+
+    switch (imputChar)
+    {
+    case 'x':
+        robot = Robot(Difficulty::Experienced,Sign::X);
+        break;
+    case 'o':
+        robot = Robot(Difficulty::Expert,Sign::O);
+        break;
+    default:
+        robot = Robot(Difficulty::Noob, Sign::Empty);
+        break;
+    }
+
+    return in;
+};
+
+std::ostream& operator << (std::ostream& out, const Robot& robot){
+        
+    switch (robot.GetDifficulty())
+    {
+    case Difficulty::Noob:
+        out << robot.GetSign() <<" Noob";
+        break;
+    case Difficulty::Experienced:
+        out << robot.GetSign() << " Experienced";
+        break;
+    case Difficulty::Expert:
+        out << robot.GetSign() << " Expert";
+        break;
+    }
+    return out;
+};
+
+
 
 Difficulty Robot::GetDifficulty() const{
     return difficulty;
