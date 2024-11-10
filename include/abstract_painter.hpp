@@ -6,6 +6,6 @@
 
 struct AbstractPainter {
     virtual void ClearFrame() = 0;
-    virtual void DrawBoard(Sign board[3][3]) = 0;
+    virtual void DrawBoard(std::array<std::array<Sign, 3>, 3> board) = 0;
     virtual void PrintGameStatus(Player player, GameStatus currentGameStatus) = 0;
 };

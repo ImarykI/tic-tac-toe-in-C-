@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <array>
 #include "point.hpp"
 #include "sign.hpp"
 
@@ -10,11 +11,11 @@
 		//Constructori
 		Board();
 		Board(const Board& b);
-		Board(Sign board[3][3]);
+		Board(std::array<std::array<Sign, 3>, 3> board);
 
 		Board& operator=(const Board& b);
 		bool operator==(const Board& other)const;
-
+		void RobotMove(Point p, Sign sign);
 		void MakeMove(Point p, Sign sign);
 		bool IsMoveValid(Point p) const;
 		bool CheckWinSituation(Sign sign) const;
@@ -22,7 +23,7 @@
 		Sign GetPointInBoard(Point point) const;
 
 	private:
-		Sign board_[3][3];
+		std::array<std::array<Sign, 3>, 3> board_;
 		void InitBoard();
 	};
 
