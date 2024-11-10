@@ -1,6 +1,11 @@
 #include "../include/painter.hpp"
-#include <cstdio>
-#include <stdlib.h>
+
+const std::string Painter::oWinMsg = "O won the game!\n";
+const std::string Painter::xWinMsg = "X won the game!\n";
+const std::string Painter::tieMsg = "The game concluded in a tie!\n";
+const std::string Painter::defMsg = "-----Ceva nu a mers bine!!!!-----";
+const std::string Painter::xRunStatus = "X: made a move, the game is still running\n";
+const std::string Painter::oRunStatus = "O: made a move, the game is still running\n";
 
 Painter::Painter()
 {
@@ -36,57 +41,60 @@ void Painter::ClearFrame(){
 };
 
 
-void Painter::DrawBoard(Sign board[3][3]){
-	
+void Painter::DrawBoard(std::array<std::array<Sign, 3>, 3> board){
+	std::cout << "  1   2   3\n";
 	for(int i = 0; i < 3; i++)
 	{
+
+		printf("%d",i+1);
 		for(int j = 0; j < 3; j++)
 		{	
+			
 			switch (board[i][j])
 			{
 			case Sign::Empty:
-				printf("   ");
+				std::cout << "   ";
 				break;
 			
 			case Sign::O:
-				printf(" O ");
+				std::cout << " O ";
 				break;
 
 			case Sign::X:
-				printf(" X ");
+				std::cout << " X ";
 				break;
 			}
 
-			if(j < 2) printf("|");
+			if(j < 2) std::cout << "|";
 		}
-		printf("\n");
-		if(i<2) printf("-----------\n");
+		std::cout << i+1 << std::endl;
+		if(i<2) std::cout<<" -----------\n";
 	}
-	printf("\n");
+	std::cout << "  1   2   3\n";
 };
 
 void Painter::PrintGameStatus(Player player, GameStatus currentGameStatus){
 	switch (currentGameStatus)
 	{
 	case GameStatus::Running:
-		if(player.GetSign() == Sign::O) printf("O: made a move, the game is still running\n");
-		else if(player.GetSign() == Sign::X)printf("X: made a move, the game is still running\n");
+		if(player.GetSign() == Sign::O) std::cout << oRunStatus;
+		else if(player.GetSign() == Sign::X) std::cout << xRunStatus;
 		break;
 	
 	case GameStatus::WinnerO:
-		printf("O won the game!\n");
+		std::cout << oWinMsg;
 		break;
 
 	case GameStatus::WinnerX:
-		printf("X won the game!\n");
+		std::cout << xWinMsg;
 		break;
 
 	case GameStatus::Tie:
-		printf("The game concluded in a tie!\n");
+		std::cout << tieMsg;
 		break;
 
 	default:
-		printf("-----Ceva nu a mers bine!!!!-----");
+		std::cout << defMsg;
 		break;
 	}
 };

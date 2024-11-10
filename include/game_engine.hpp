@@ -8,6 +8,11 @@
 class GameEngine{
     public:
 
+        static const std::string gameModeMenu;
+        static const std::string chooseSignMenu;
+        static const std::string robotDiffMenu;
+        static const std::string instructionsMsg;
+
         //Constructori
         GameEngine();
         GameEngine(Board board, Player player1, Player player2, GameStatus status, Painter painter, short int currPlayerNumber);
@@ -27,10 +32,12 @@ class GameEngine{
         friend std::istream& operator >> (std::istream& in, GameEngine& gameEngine);
         friend std::ostream& operator << (std::ostream& out, const GameEngine& gameEngine);
 
+        bool isMultiplayer = false;
     private:
         Board board;
         Player player1;
         Player player2;
+        Robot robot;
         GameStatus status;
         Painter painter;
 

@@ -1,5 +1,9 @@
 #include "../include/game_engine.hpp"
-#include <cstdio>
+
+const std::string GameEngine::gameModeMenu = "Choose a game mode:\n1.Player vs Player\n2.Player vs Robot\n->";
+const std::string GameEngine::chooseSignMenu = "Chose the sign for Player 1: X or O\n->";
+const std::string GameEngine::robotDiffMenu = "Chose a difficutly for the robot:\n1. Noob\n2. Experienced\n3. Expert\n->";
+const std::string GameEngine::instructionsMsg = " has to chose a move:\nWrite the coordonates of the grid, where you want your sign to be placed\nTop left cell is (1 1), bottom right one is (3 3):\n->";
 
 GameEngine::GameEngine(): player1(Sign::Empty), player2(Sign::Empty){
     currentPlayerNumber = 1;
@@ -67,12 +71,13 @@ void GameEngine::StartGame()
 
         char game_mode_var;
         bool is_imput_valid = false;
-        printf("Choose a game mode:\n1.Player vs Player\n2.Player vs Robot\n->");
-        scanf(" %c", &game_mode_var);
+        std::cout << gameModeMenu;
+        std::cin >> game_mode_var;
         if(game_mode_var == '1'){
+            isMultiplayer = true;
             painter.ClearFrame();
-            printf("Chose the sign for Player 1: X or O\n->");
-            scanf(" %c", &game_mode_var);
+            std::cout << chooseSignMenu;
+            std::cin >> game_mode_var;
             if(game_mode_var == 'x'){
                 player1 = Player(Sign::X);
                 player2 = Player(Sign::O);
@@ -84,23 +89,24 @@ void GameEngine::StartGame()
             };
         } else if (game_mode_var == '2')
         {   
+            isMultiplayer = false;
             painter.ClearFrame();
-            printf("Chose the sign for Player: X or O\n->");
-            scanf(" %c", &game_mode_var);
+            std::cout << chooseSignMenu;
+            std::cin >> game_mode_var;
             if(game_mode_var == 'x') player1 = Player(Sign::X);
             else if(game_mode_var == 'o') player1 = Player(Sign::O);
             else continue;
             painter.ClearFrame();
-            printf("Chose a difficutly for the robot:\n1. Noob\n2. Experienced\n3. Expert\n->");
-            scanf(" %c", &game_mode_var);
+            std::cout << robotDiffMenu;
+            std::cin >> game_mode_var;
             if(game_mode_var == '1'){
-                player2 = Robot(Difficulty::Noob, player1.GetSign() == Sign::O ? Sign::X : Sign::O);
+                robot = Robot(Difficulty::Noob, player1.GetSign() == Sign::O ? Sign::X : Sign::O);
                 is_imput_valid = true;
             } else if(game_mode_var == '2'){
-                player2 = Robot(Difficulty::Experienced, player1.GetSign() == Sign::O ? Sign::X : Sign::O);
+                robot = Robot(Difficulty::Experienced, player1.GetSign() == Sign::O ? Sign::X : Sign::O);
                 is_imput_valid = true;
             }else if(game_mode_var == '3'){
-                player2 = Robot(Difficulty::Expert, player1.GetSign() == Sign::O ? Sign::X : Sign::O);
+                robot = Robot(Difficulty::Expert, player1.GetSign() == Sign::O ? Sign::X : Sign::O);
                 is_imput_valid = true;
             }
         }
@@ -117,7 +123,8 @@ void GameEngine::RunGame(){
         painter.DrawBoard(board.board_);
         status = CheckStatus();
         if(currentPlayerNumber == 1) painter.PrintGameStatus(player1, status);
-        if(currentPlayerNumber == 2) painter.PrintGameStatus(player2, status);
+        if(currentPlayerNumber == 2 && isMultiplayer) painter.PrintGameStatus(player2, status);
+        else if(currentPlayerNumber == 2 && !isMultiplayer) painter.PrintGameStatus(robot, status);
         SwitchPlayer();
     }
 };
@@ -133,9 +140,13 @@ GameStatus GameEngine::CheckStatus() const{
             return player1.GetSign() == Sign::O ? GameStatus::WinnerO : GameStatus::WinnerX;
         };
     }
-    if(currentPlayerNumber == 2){
+    if(currentPlayerNumber == 2 && isMultiplayer){
         if(board.CheckWinSituation(player2.GetSign())){
             return player2.GetSign() == Sign::O ? GameStatus::WinnerO : GameStatus::WinnerX;
+        };
+    } else if (currentPlayerNumber == 2 && !isMultiplayer) {
+        if(board.CheckWinSituation(robot.GetSign())){
+            return robot.GetSign() == Sign::O ? GameStatus::WinnerO : GameStatus::WinnerX;
         };
     }
     if(board.CheckDrawSituation()) return GameStatus::Tie;
@@ -158,15 +169,15 @@ void GameEngine::HandleMove(){
     int currentMoveX = 0;
     int currentMoveY = 0;
     if(currentPlayerNumber == 1){
-        printf("Player 1 has to chose a move:\nWrite the coordonates of the grid, where you want your sign to be placed\n\
-        top left cell is (1 1), bottom right one is (3 3):\n->");
-        scanf("%d %d",&currentMoveX, &currentMoveY);
+        std::cout << "Player " << currentPlayerNumber << instructionsMsg;
+        std::cin >> currentMoveX >> currentMoveY;
         board.MakeMove(Point(currentMoveX-1,currentMoveY-1), player1.GetSign());
     }
-    if(currentPlayerNumber == 2){
-        printf("Player 2 has to chose a move:\nWrite the coordonates of the grid, where you want your sign to be placed\n\
-        top left cell is (1 1), bottom right one is (3 3):\n->");
-        scanf("%d %d",&currentMoveX, &currentMoveY);
+    if(currentPlayerNumber == 2 && isMultiplayer){
+        std::cout << "Player " << currentPlayerNumber << instructionsMsg;
+        std::cin >> currentMoveX >> currentMoveY;
         board.MakeMove(Point(currentMoveX-1,currentMoveY-1), player2.GetSign());
+    } else if(currentPlayerNumber == 2 && !isMultiplayer) {
+        board.MakeMove(robot.MakeMove(board), robot.GetSign());
     }
 };

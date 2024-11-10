@@ -3,8 +3,11 @@
 #include "player.hpp"
 #include "difficulty.hpp"
 #include "point.hpp"
+#include "robot_move.hpp"
+
 
 class Robot : public Player{
+
     public:
         //Constructori
         Robot();
@@ -18,9 +21,13 @@ class Robot : public Player{
         Difficulty GetDifficulty() const;
         Point MakeMove(Board& board);
     private:
+     
+
+        short int currentPlayer=1;
+
         Difficulty difficulty;
         Point MakeRandomMove(Board& board);
-        Point MakeWinningMove(Board& board);       
+        RobotMove MakeWinningMove(Board& board, Sign player);
 
 };
 

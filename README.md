@@ -1,6 +1,7 @@
 # tic-tac-toe-in-Cpp
 
 [Laboratorul 2](#laboratorul-2)
+[Laboratorul 4](#laboratorul-4)
 
 ### Scopul:
 Recrearea faimosului joc Tic-Tac-Toe (aka: X și O) folosind limbajul C++.
@@ -253,3 +254,13 @@ clean:
 
 - penru denumirea folderelor am folosit denumiri variabile
 - comanda **clean** șterge toate fișierele .o din obj și .exe din bin, astfel curățind proiectul înainte de o ulterioară compilare. Dar comanda **rm** merge doar în terminale ca bash...
+
+# Laboratorul 4
+Am utilizat **std::array** în loc de array simplu din C ca container pentru elementele pentru tablă. La fel, am utilizat algoritmii **std::any_of** și **std::fill** in *board.cpp*. 
+
+Am utilizat containerul **vector** pentru salvarea temporară a mișcărilor posibile pentru IA cu care jucătorul poate juca, în *robot.cpp*.
+
+Folosesc referințe în mai multe locuri. Spre exemplu pentru modificarea tablei de joc și analizarea celei mai bune mișcări de către Robot, folosesc referință la   **board_**, care este masa de joc.
+
+Am înlocuit șirurile de caractere din *game_engine.cpp* și *painter.cpp* cu **std::string**. Am refăcut codul, renunțând la biblioteca **stdio** și folosind **iostream** pentru afișare și citire.
+
