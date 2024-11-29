@@ -4,6 +4,7 @@
 #include "robot.hpp"
 #include "game_status.hpp"
 #include "board.hpp"
+#include <sqlite3.h>
 
 class GameEngine{
     public:
@@ -31,6 +32,14 @@ class GameEngine{
     
         friend std::istream& operator >> (std::istream& in, GameEngine& gameEngine);
         friend std::ostream& operator << (std::ostream& out, const GameEngine& gameEngine);
+
+
+        void InitializeDatabase(sqlite3** db);
+        void UpdateWins(sqlite3* db, const std::string& player);
+        void DisplayStats(sqlite3* db);
+        void EndGame(GameStatus status);
+
+
 
         bool isMultiplayer = false;
     private:

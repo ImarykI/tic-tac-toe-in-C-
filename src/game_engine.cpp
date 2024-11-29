@@ -127,6 +127,7 @@ void GameEngine::RunGame(){
         else if(currentPlayerNumber == 2 && !isMultiplayer) painter.PrintGameStatus(robot, status);
         SwitchPlayer();
     }
+    EndGame(status);
 };
 
 bool GameEngine::IsGameOver() const{
@@ -181,3 +182,78 @@ void GameEngine::HandleMove(){
         board.MakeMove(robot.MakeMove(board), robot.GetSign());
     }
 };
+
+void GameEngine::InitializeDatabase(sqlite3** db) {
+    int rc = sqlite3_open("game_stats.db", db);
+    if (rc) {
+        std::cerr << "Cannot open database: " << sqlite3_errmsg(*db) << std::endl;
+        return;
+    }
+
+    const char* createTableSQL = R"(
+        CREATE TABLE IF NOT EXISTS GameStats (
+            Player TEXT PRIMARY KEY,
+            Wins INTEGER DEFAULT 0
+        );
+    )";
+
+    char* errMsg = nullptr;
+    rc = sqlite3_exec(*db, createTableSQL, 0, 0, &errMsg);
+    if (rc != SQLITE_OK) {
+        std::cerr << "SQL error: " << errMsg << std::endl;
+        sqlite3_free(errMsg);
+    }
+}
+
+
+void GameEngine::UpdateWins(sqlite3* db, const std::string& player) {
+    const char* updateSQL = R"(
+        INSERT INTO GameStats (Player, Wins)
+        VALUES (?, 1)
+        ON CONFLICT(Player)
+        DO UPDATE SET Wins = Wins + 1;
+    )";
+
+    sqlite3_stmt* stmt;
+    sqlite3_prepare_v2(db, updateSQL, -1, &stmt, nullptr);
+
+    sqlite3_bind_text(stmt, 1, player.c_str(), -1, SQLITE_STATIC);
+
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        std::cerr << "Failed to update wins: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
+}
+
+void GameEngine::DisplayStats(sqlite3* db) {
+    const char* querySQL = "SELECT Player, Wins FROM GameStats";
+
+    sqlite3_stmt* stmt;
+    sqlite3_prepare_v2(db, querySQL, -1, &stmt, nullptr);
+
+    std::cout << "Game Stats:\n";
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        const char* player = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+        int wins = sqlite3_column_int(stmt, 1);
+
+        std::cout << player << ": " << wins << " wins\n";
+    }
+
+    sqlite3_finalize(stmt);
+}
+
+void GameEngine::EndGame(GameStatus status) {
+    sqlite3* db;
+    InitializeDatabase(&db);
+
+    if (status == GameStatus::WinnerX) {
+        UpdateWins(db, "Player X");
+    } else if (status == GameStatus::WinnerO) {
+        UpdateWins(db, "Player O");
+    }
+
+    DisplayStats(db);
+
+    sqlite3_close(db);
+}
