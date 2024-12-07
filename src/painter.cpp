@@ -41,7 +41,7 @@ void Painter::ClearFrame(){
 };
 
 
-void Painter::DrawBoard(std::array<std::array<Sign, 3>, 3> board){
+void Painter::DrawBoard(std::array<std::array<Sign, BOARD_SIZE>, BOARD_SIZE> board){
 	std::cout << "  1   2   3\n";
 	for(int i = 0; i < 3; i++)
 	{

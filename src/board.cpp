@@ -64,7 +64,7 @@
         }
         return in;
     };
-
+    
     std::ostream& operator << (std::ostream& out, const Board& board){
         //Acelasi lucru ca si DrawBoard din Painter
     	for(int i = 0; i < 3; i++)
