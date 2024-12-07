@@ -2,12 +2,26 @@ OBJDIR = obj
 SRCDIR = src
 BINDIR = bin
 LIBDIR = lib
+TESTDIR = tests
+TESTOBJDIR = test_obj
+TESTBINDIR = test_bin
+GTESTDIR = gtest
 
 
 OBJECTS = $(OBJDIR)/board.o $(OBJDIR)/game_engine.o $(OBJDIR)/main.o $(OBJDIR)/painter.o \
           $(OBJDIR)/player.o $(OBJDIR)/point.o $(OBJDIR)/robot.o
 
+OBJECTSNOMAIN = $(OBJDIR)/board.o $(OBJDIR)/game_engine.o $(OBJDIR)/painter.o \
+          $(OBJDIR)/player.o $(OBJDIR)/point.o $(OBJDIR)/robot.o
+
 LIBS = board game_engine main painter player point robot
+
+LIBSNOMAIN = board game_engine painter player point robot
+
+
+TESTOBJECTS = $(TESTOBJDIR)/test_board.o $(TESTOBJDIR)/test_game_engine.o
+TESTEXEC = $(TESTBINDIR)/TicTacToeTests.exe
+
 
 all: libs TicTacToeGame
 
@@ -65,6 +79,19 @@ $(OBJDIR)/robot.o: $(SRCDIR)/robot.cpp
 
 
 
+$(TESTOBJDIR)/test_board.o: $(TESTDIR)/test_board.cpp
+	g++ $(CXXFLAGS) -c $(TESTDIR)/test_board.cpp -o $(TESTOBJDIR)/test_board.o
+
+$(TESTOBJDIR)/test_game_engine.o: $(TESTDIR)/test_game_engine.cpp
+	g++  -I$(GTESTDIR)/include -c $(TESTDIR)/test_game_engine.cpp -o $(TESTOBJDIR)/test_game_engine.o
+
+
+$(TESTEXEC): $(TESTOBJECTS) $(OBJECTSNOMAIN)
+	g++ $(TESTOBJECTS) $(OBJECTSNOMAIN) -L$(LIBDIR) $(addprefix -l,$(LIBSNOMAIN)) -L$(GTESTDIR)/lib -lgtest $(GTESTDIR)/lib/gtest_main.o -lsqlite3 -o $(TESTEXEC)
+
+
+tests: $(TESTEXEC)
+
 
 clean:
-	rm -f $(OBJDIR)/*.o $(LIBDIR)/*.lib $(BINDIR)/*.exe
+	rm -f $(OBJDIR)/*.o $(LIBDIR)/*.lib $(BINDIR)/*.exe $(TESTOBJDIR)/*.o $(TESTBINDIR)/*.exe

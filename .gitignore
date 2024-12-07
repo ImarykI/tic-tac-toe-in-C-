@@ -4,3 +4,7 @@ obj
 bin
 .vscode
 lib
+googletest
+test_bin
+test_obj
+
